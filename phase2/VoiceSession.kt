@@ -1,7 +1,7 @@
 package com.pulse.assistant
 
 import android.Manifest
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,18 +13,18 @@ import androidx.core.content.ContextCompat
 import java.util.Locale
 
 /** On-device Android speech bridge. No cloud AI or background microphone capture. */
-class VoiceSession(private val activity: Activity, private val onStatus: (String) -> Unit) {
+class VoiceSession(private val context: Context, private val onStatus: (String) -> Unit) {
     private var tts: TextToSpeech? = null
     private var recognizer: SpeechRecognizer? = null
     private var ready = false
     private var closed = false
 
     init {
-        tts = TextToSpeech(activity) { status ->
+        tts = TextToSpeech(context) { status ->
             ready = status == TextToSpeech.SUCCESS
             if (ready) {
                 tts?.language = Locale.KOREAN
-                activity.runOnUiThread { if (!closed) onStatus("음성 응답 준비 완료") }
+                if (!closed) onStatus("음성 응답 준비 완료")
             }
         }
     }
@@ -33,17 +33,16 @@ class VoiceSession(private val activity: Activity, private val onStatus: (String
 
     fun listen() {
         if (closed) return
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             onStatus("마이크 권한을 허용한 뒤 다시 눌러 주세요.")
-            activity.requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 2001)
             return
         }
-        if (!SpeechRecognizer.isRecognitionAvailable(activity)) {
+        if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             onStatus("이 기기에서 음성 인식을 사용할 수 없습니다.")
             return
         }
         recognizer?.destroy()
-        recognizer = SpeechRecognizer.createSpeechRecognizer(activity).also { sr ->
+        recognizer = SpeechRecognizer.createSpeechRecognizer(context).also { sr ->
             sr.setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) { onStatus("듣고 있어요…") }
                 override fun onBeginningOfSpeech() { onStatus("말씀을 듣는 중…") }
