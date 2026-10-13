@@ -25,6 +25,11 @@ jobs:
           gradle-version: '8.9'
       - name: Extract Android project
         run: unzip -q -o PULSE-Phase1.zip
+      - name: Apply Phase 2 voice sources
+        run: |
+          cp phase2/MainActivity.kt PULSE-Phase1/app/src/main/java/com/pulse/assistant/MainActivity.kt
+          cp phase2/VoiceSession.kt PULSE-Phase1/app/src/main/java/com/pulse/assistant/VoiceSession.kt
+          cp phase2/AndroidManifest.xml PULSE-Phase1/app/src/main/AndroidManifest.xml
       - name: Build APK
         working-directory: PULSE-Phase1
         run: gradle --no-daemon :app:assembleDebug
