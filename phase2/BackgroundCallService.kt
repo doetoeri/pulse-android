@@ -22,6 +22,7 @@ class BackgroundCallService : Service() {
     companion object {
         const val START = "com.pulse.assistant.START_CALL"
         const val STOP = "com.pulse.assistant.STOP_CALL"
+        const val LISTEN = "com.pulse.assistant.LISTEN"
         const val CHANNEL = "pulse_ongoing_call"
         const val NOTIFICATION_ID = 4201
     }
@@ -49,6 +50,7 @@ class BackgroundCallService : Service() {
                 stopCall()
                 return START_NOT_STICKY
             }
+            LISTEN -> { if (CallRuntime.active) voice?.listen() }
             START -> {
                 if (!CallRuntime.active) {
                     CallRuntime.active = true
