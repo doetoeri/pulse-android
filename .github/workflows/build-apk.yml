@@ -29,6 +29,7 @@ jobs:
         run: |
           cp phase2/MainActivity.kt PULSE-Phase1/app/src/main/java/com/pulse/assistant/MainActivity.kt
           cp phase2/VoiceSession.kt PULSE-Phase1/app/src/main/java/com/pulse/assistant/VoiceSession.kt
+          cp phase2/BackgroundCallService.kt PULSE-Phase1/app/src/main/java/com/pulse/assistant/BackgroundCallService.kt
           cp phase2/AndroidManifest.xml PULSE-Phase1/app/src/main/AndroidManifest.xml
       - name: Build APK
         working-directory: PULSE-Phase1
